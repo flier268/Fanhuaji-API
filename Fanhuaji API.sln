@@ -5,6 +5,8 @@ VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fanhuaji-API", "Fanhuaji-API\Fanhuaji-API.csproj", "{A2327159-A519-4AFE-9020-DA45C1452D8A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanhuaji-APITests", "Fanhuaji-APITests\Fanhuaji-APITests.csproj", "{88423555-8A2C-4AE5-B00D-C281A8C328AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{A2327159-A519-4AFE-9020-DA45C1452D8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2327159-A519-4AFE-9020-DA45C1452D8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2327159-A519-4AFE-9020-DA45C1452D8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88423555-8A2C-4AE5-B00D-C281A8C328AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88423555-8A2C-4AE5-B00D-C281A8C328AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88423555-8A2C-4AE5-B00D-C281A8C328AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88423555-8A2C-4AE5-B00D-C281A8C328AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
