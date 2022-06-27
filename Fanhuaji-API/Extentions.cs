@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 
 namespace Fanhuaji_API
 {
@@ -8,19 +9,12 @@ namespace Fanhuaji_API
     {
         internal static string GetColumnName(this PropertyInfo property)
         {
-            var attr = (ColumnName[])property.GetCustomAttributes(typeof(ColumnName), false);
-            if (attr.Length > 0)
-                return attr[0].Name ?? property.Name;
-            else
-                return property.Name;
+            return property.GetCustomAttribute<JsonPropertyNameAttribute>().Name ?? property.Name;
         }
+
         internal static bool GetVisible(this PropertyInfo property)
         {
-            var attr = (ColumnName[])property.GetCustomAttributes(typeof(ColumnName), false);
-            if (attr.Length > 0)
-                return attr[0].Visible;
-            else
-                return true;
+            return property.GetCustomAttribute<JsonIgnoreAttribute>() != null;
         }
     }
 }

@@ -1,6 +1,5 @@
-﻿using Fanhuaji_API.Class;
+﻿using Fanhuaji_API.Models;
 using Fanhuaji_API.Enum;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,6 +7,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Fanhuaji_API
@@ -22,12 +23,13 @@ namespace Fanhuaji_API
             if (Fanhuaji.Terms_of_Service != Terms_of_Service || !Agree)
                 throw new Exception("You should agree to the Terms of Service.");
         }
+
         public static bool CheckConnection()
         {
             try
             {
                 using (var client = new WebClient())
-                using (client.OpenRead("http://api.zhconvert.org/"))
+                using (client.OpenRead("https://api.zhconvert.org/"))
                     return true;
             }
             catch
@@ -35,9 +37,12 @@ namespace Fanhuaji_API
                 return false;
             }
         }
-        public async Task<Callback> ConvertAsync(string Text, Enum_Converter Converter, Config Config)
+
+        public async Task<Callback> ConvertAsync(string Text, Enum_Converter Converter, Config Config = null)
         {
-            if (Text == null || Config == null)
+            if (Config is null)
+                Config = new Config();
+            if (Text == null)
                 throw new Exception("Text or Config should not be null");
             Dictionary<string, string> content = new Dictionary<string, string>() { { "text", Text }, { "converter", Converter.ToString() } };
             foreach (var property in Config.GetType().GetProperties())
@@ -76,16 +81,17 @@ namespace Fanhuaji_API
                     throw new Exception("Something wrong.");
                 }
             }
-            
-            return Callback.FromJson(await PostAsync("https://api.zhconvert.org/convert", new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json")));
+
+            return Callback.FromJson(await PostAsync("https://api.zhconvert.org/convert", new StringContent(JsonSerializer.Serialize(content), Encoding.UTF8, "application/json")));
         }
+
         private static async Task<string> PostAsync(string url, HttpContent formUrlEncodedContent)
         {
             try
             {
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("https://api.zhconvert.org");                    
+                    client.BaseAddress = new Uri("https://api.zhconvert.org");
                     var result = await client.PostAsync(url, formUrlEncodedContent);
                     string resultContent = await result.Content.ReadAsStringAsync();
                     return resultContent;
@@ -97,12 +103,14 @@ namespace Fanhuaji_API
                 throw new FanhuajiException("無法連線至繁化姬，請確認連線狀態");
             }
         }
+
         public const string Terms_of_Service = "繁化姬的後端可能會留存您所提供的文本與使用者設定，以做為改進轉換正確率的用途。\r\n" +
             "繁化姬並不保證所有轉換都是正確的，並且不為轉換錯誤而造成的損失負責。 若您的文本為正式的文件，您應該在轉換後親自校閱它。\r\n" +
             "繁化姬會於字幕中，加入不妨礙實際觀看效果的內容以做為推廣用途。 在「免費」使用繁化姬的情況下，我方不允許您將這些內容去除。 （商業用途請見商業使用）\r\n" +
             "如需商用必須付費給繁化姬" +
             "\r\n" +
             "繁化姬官方網站：https://zhconvert.org/";
+
         public class FanhuajiException : Exception
         {
             public FanhuajiException(string message) : base(message)

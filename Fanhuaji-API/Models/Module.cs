@@ -1,28 +1,33 @@
 ﻿using Fanhuaji_API.Enum;
-using Newtonsoft.Json;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 
-namespace Fanhuaji_API.Class
+namespace Fanhuaji_API.Models
 {
-    public class Module: INotifyPropertyChanged
+    public class Module : INotifyPropertyChanged
     {
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public Module(Enum_Modules Modules,bool? Enable)
+        public Module(Enum_Modules Modules, bool? Enable)
         {
             this.ModuleName = Modules;
             this.Enable = Enable;
         }
+
         public Enum_Modules ModuleName { get; set; }
         private bool? _Enable;
-        public bool? Enable { get => _Enable; set { _Enable = value;OnPropertyChanged(); } }
 
-        [ColumnName(null, false), JsonIgnore]
+        public bool? Enable
+        { get => _Enable; set { _Enable = value; OnPropertyChanged(); } }
+
+        [JsonIgnore]
         public string Type
         {
             get
@@ -38,10 +43,13 @@ namespace Fanhuaji_API.Class
                     case Enum_Modules.Typo:
                     case Enum_Modules.Computer:
                     case Enum_Modules.TransliterationToTranslation:
+                    case Enum_Modules.ChineseVariant:
                         return "其他";
+
                     case Enum_Modules.Repeat:
                     case Enum_Modules.RepeatAutoFix:
                         return "功能性";
+
                     case Enum_Modules.OnePiece:
                     case Enum_Modules.Naruto:
                     case Enum_Modules.HunterXHunter:
@@ -49,18 +57,21 @@ namespace Fanhuaji_API.Class
                     case Enum_Modules.VioletEvergarden:
                     case Enum_Modules.Gundam:
                         return "動畫";
+
                     case Enum_Modules.EllipsisMark:
                     case Enum_Modules.QuotationMark:
                         return "標點符號";
+
                     case Enum_Modules.Mythbusters:
                         return "電視劇";
+
                     default:
-                        return "錯誤";
+                        throw new NotImplementedException($"{ModuleName} not implemented");
                 }
             }
         }
 
-        [ColumnName(null, false), JsonIgnore]
+        [JsonIgnore]
         public string Name
         {
             get
@@ -86,14 +97,15 @@ namespace Fanhuaji_API.Class
                     case Enum_Modules.Gundam: return "鋼彈";
                     case Enum_Modules.EllipsisMark: return "刪節號（省略號）";
                     case Enum_Modules.QuotationMark: return "引號";
-                    case Enum_Modules.Mythbusters: return "流言終結者	";
+                    case Enum_Modules.Mythbusters: return "流言終結者";
+                    case Enum_Modules.ChineseVariant: return "正、異體字";
                     default:
-                        return "錯誤";
+                        throw new NotImplementedException($"{ModuleName} not implemented");
                 }
             }
         }
 
-        [ColumnName(null, false), JsonIgnore]
+        [JsonIgnore]
         public string Description
         {
             get
@@ -120,8 +132,9 @@ namespace Fanhuaji_API.Class
                     case Enum_Modules.EllipsisMark: return "將中文裡的「...」轉換成「…」";
                     case Enum_Modules.QuotationMark: return "轉換 中國／非中國 間的引號";
                     case Enum_Modules.Mythbusters: return "Discovery 科普片";
+                    case Enum_Modules.ChineseVariant: return " 目前的功能僅為：在「香港化」時，使用「港標繁體」。（需要強制啟用才會生效，且某些字體下可能會缺字） （必須手動啟用）";
                     default:
-                        return "錯誤";
+                        throw new NotImplementedException($"{ModuleName} not implemented");
                 }
             }
         }
